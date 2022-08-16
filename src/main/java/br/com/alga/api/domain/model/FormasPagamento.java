@@ -6,23 +6,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity(name = "COZINHA")
-public class Cozinha {
+@Entity(name = "FORMAS_PAGAMENTO")
+public class FormasPagamento {
 	
 	@EqualsAndHashCode.Include
-	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
 	private Long id;
-
-	@Column(name = "NOME", length = 30, nullable = false)
-//	@JsonProperty(value = "titulo") // anotacao para representacao na resposta do json
-//	@JsonIgnore // anotacao par remover o att no corpo do json
-	private String nome;
+	
+	@Column(nullable = false)
+	private String descricao;
 
 	public Long getId() {
 		return id;
@@ -32,11 +28,11 @@ public class Cozinha {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getDescricao() {
+		return descricao;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 }

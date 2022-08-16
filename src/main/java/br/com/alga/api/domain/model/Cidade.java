@@ -1,7 +1,5 @@
 package br.com.alga.api.domain.model;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,24 +11,21 @@ import javax.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity(name = "RESTAURANTE")
-public class Restaurante {
-
+@Entity(name = "CIDADE")
+public class Cidade {
+	
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
 	@Column(nullable = false)
 	private String nome;
-	
-	@Column(name = "taxa_frete", nullable = false) // nullable se for true, aceita null, se for false, não aceita null
-	private BigDecimal taxaFrete;
-	
-	@ManyToOne
-	@JoinColumn(name = "cozinha_id", nullable = false) //serve para banco legado. Pode retirar se quiser
-	private Cozinha cozinha;
 
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private Estado estado;
+	
 	public Long getId() {
 		return id;
 	}
@@ -47,19 +42,12 @@ public class Restaurante {
 		this.nome = nome;
 	}
 
-	public BigDecimal getTaxaFrete() {
-		return taxaFrete;
+	public Estado getEstado() {
+		return estado;
 	}
 
-	public void setTaxaFrete(BigDecimal taxaFrete) {
-		this.taxaFrete = taxaFrete;
+	public void setEstado(Estado estado) {
+		this.estado = estado;
 	}
-
-	public Cozinha getCozinha() {
-		return cozinha;
-	}
-
-	public void setCozinha(Cozinha cozinha) {
-		this.cozinha = cozinha;
-	}
+	
 }

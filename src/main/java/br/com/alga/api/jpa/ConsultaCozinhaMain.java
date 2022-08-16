@@ -19,7 +19,7 @@ public class ConsultaCozinhaMain {
 					.run(args);
 			
 			CozinhaRepository cadCozinha = appContext.getBean(CozinhaRepository.class);
-		List<Cozinha> cozinhas = cadCozinha.listar();
+		List<Cozinha> cozinhas = cadCozinha.findAll();
 		
 		for (Cozinha cozinha : cozinhas) {
 			System.out.println(cozinha.getNome());
