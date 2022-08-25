@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity(name = "cidade")
+@Entity
 public class Cidade {
 	
 	@EqualsAndHashCode.Include

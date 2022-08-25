@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity(name = "estado")
+@Entity
 public class Estado {
 	
 	@EqualsAndHashCode.Include
