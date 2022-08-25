@@ -40,6 +40,7 @@ public class RestauranteController {
 	@GetMapping
 	public List<Restaurante> listar() {
 		return restauranteRepository.findAll();
+		
 	}
 
 	@GetMapping("/{restauranteId}")
@@ -71,7 +72,7 @@ public class RestauranteController {
 
 			if (restaurante != null) {
 				BeanUtils.copyProperties(restaurante, restauranteAtual, 
-						"id", "formasPagamento", "endereco");
+						"id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
 				cadastroRestaurante.salvar(restauranteAtual);
 				return ResponseEntity.ok(restauranteAtual);

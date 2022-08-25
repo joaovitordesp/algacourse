@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity(name = "COZINHA")
+@Entity(name = "cozinha")
 public class Cozinha {
 	
 	@EqualsAndHashCode.Include
