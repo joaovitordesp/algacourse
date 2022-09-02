@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.alga.api.domain.exception.EntidadeEmUsoException;
 import br.com.alga.api.domain.exception.EntidadeNaoEncontradaException;
@@ -24,8 +25,6 @@ import br.com.alga.api.domain.model.Cozinha;
 import br.com.alga.api.domain.repository.CozinhaRepository;
 import br.com.alga.api.domain.service.CadastroCozinhaService;
 
-//@Controller
-//@ResponseBody //as respostas do metodo da controller deve ir para a resposta da requisicao
 @RestController // Rest Controller faz com que nao use @Controller e @ResponseBody
 @RequestMapping("/cozinhas")
 public class CozinhaController {
@@ -38,22 +37,13 @@ public class CozinhaController {
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Cozinha> listar() {
-		//return cozinhaRepository.listar();
+		// return cozinhaRepository.listar();
 		return cozinhaRepository.findAll();
 	}
 
 	@GetMapping("/{cozinhaId}")
-	public ResponseEntity<Cozinha> buscar(@PathVariable Long cozinhaId) { // ResponseEntity permiti customizar a
-																			// resposta http
-		//Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
-		Optional<Cozinha>  cozinha = cozinhaRepository.findById(cozinhaId);
-		
-		if (cozinha.isPresent()) {
-			return ResponseEntity.ok(cozinha.get());
-		} else {
-			return ResponseEntity.notFound().build();
-		}
-
+	public Cozinha buscar(@PathVariable Long cozinhaId) { // ResponseEntity permiti customizar a
+		return cadastroCozinha.buscarOuFalhar(cozinhaId);
 	}
 
 	@PostMapping
@@ -69,35 +59,18 @@ public class CozinhaController {
 	}
 
 	@PutMapping("/{cozinhaId}")
-	public ResponseEntity<?> atualizar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha) {
-			Optional<Cozinha>  cozinhaAtual = cozinhaRepository.findById(cozinhaId);
+	public Cozinha atualizar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha) {
+		Cozinha cozinhaAtual = cadastroCozinha.buscarOuFalhar(cozinhaId);
+		
+			BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
-			if (cozinhaAtual.isPresent()) {
-				BeanUtils.copyProperties(cozinha, cozinhaAtual.get(), "id");
-				/*
-				 * 1 parametro - origem : 2 param - destino o copyProperties passa todas as
-				 * propriedades para o outro, até mesmo as nulas Por isso, podemos colocar o
-				 * terceiro parametro que seria qual que você quer ignorar
-				 */
-				// cozinhaAtual.setNome(cozinha.getNome());
+			return cadastroCozinha.salvar(cozinhaAtual);
 
-				Cozinha cozinhaSalva = cadastroCozinha.salvar(cozinhaAtual.get());
-				return ResponseEntity.ok(cozinhaSalva);
-			} 
-				return ResponseEntity.notFound().build();
 	}
 
 	@DeleteMapping("/{cozinhaId}")
-	public ResponseEntity<Cozinha> deletar(@PathVariable Long cozinhaId) {
-		try {
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deletar(@PathVariable Long cozinhaId) {
 			cadastroCozinha.excluir(cozinhaId);
-
-			return ResponseEntity.noContent().build();
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.notFound().build();
-		} catch (EntidadeEmUsoException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).build(); // CONFLICT - ERRO 409
-			// Veremos em outro modulo como tratar a mensagem de erro
-		}
 	}
 }

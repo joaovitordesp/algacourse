@@ -9,8 +9,8 @@ import javax.persistence.Id;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity(name = "formas_pagamento")
-public class FormasPagamento {
+@Entity(name = "forma_pagamento")
+public class FormaPagamento {
 	
 	@EqualsAndHashCode.Include
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

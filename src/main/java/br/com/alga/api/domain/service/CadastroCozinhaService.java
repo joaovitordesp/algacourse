@@ -5,14 +5,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import br.com.alga.api.domain.exception.CozinhaNaoEncontradaException;
 import br.com.alga.api.domain.exception.EntidadeEmUsoException;
-import br.com.alga.api.domain.exception.EntidadeNaoEncontradaException;
 import br.com.alga.api.domain.model.Cozinha;
 import br.com.alga.api.domain.repository.CozinhaRepository;
 
 @Service
 public class CadastroCozinhaService {
 	
+	private static final String MSG_COZINHA_EM_USO = "Cozinha de código %d não pdoe ser removidade";
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
 	
@@ -25,14 +26,17 @@ public class CadastroCozinhaService {
 			cozinhaRepository.deleteById(cozinhaId);
 		
 		}catch(EmptyResultDataAccessException e) {
-			throw new EntidadeNaoEncontradaException(
-					String.format("Não existe um cadastro de cozinha com código %d", cozinhaId));
+			throw new CozinhaNaoEncontradaException(cozinhaId);
+
 		}catch(DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
-					String.format("Cozinha de código %d não pdoe ser removidade"
+					String.format(MSG_COZINHA_EM_USO
 							+ ", pois está em uso", cozinhaId)); 
-			//CONFLICT - ERRO 409
-			//Veremos em outro modulo como tratar a mensagem de erro
 		}
+	}
+	
+	public Cozinha buscarOuFalhar(Long cozinhaId) {
+		return cozinhaRepository.findById(cozinhaId)
+				.orElseThrow(() -> new CozinhaNaoEncontradaException(cozinhaId));
 	}
 }

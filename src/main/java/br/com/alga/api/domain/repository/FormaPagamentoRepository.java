@@ -3,10 +3,10 @@ package br.com.alga.api.domain.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.com.alga.api.domain.model.FormasPagamento;
+import br.com.alga.api.domain.model.FormaPagamento;
 
 @Repository
-public interface FormasPagamentoRepository extends JpaRepository<FormasPagamento, Long>{
+public interface FormaPagamentoRepository extends JpaRepository<FormaPagamento, Long>{
 	
 
 }

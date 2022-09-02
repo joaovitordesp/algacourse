@@ -3,7 +3,6 @@ package br.com.alga.api.controller;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.alga.api.domain.exception.CozinhaNaoEncontradaException;
 import br.com.alga.api.domain.exception.EntidadeNaoEncontradaException;
+import br.com.alga.api.domain.exception.NegocioException;
 import br.com.alga.api.domain.model.Restaurante;
 import br.com.alga.api.domain.repository.RestauranteRepository;
 import br.com.alga.api.domain.service.CadastroRestauranteService;
@@ -44,57 +45,40 @@ public class RestauranteController {
 	}
 
 	@GetMapping("/{restauranteId}")
-	public ResponseEntity<Restaurante> buscarPorId(@PathVariable Long restauranteId) {
-		Optional<Restaurante> restaurante = restauranteRepository.findById(restauranteId);
-
-		if (restaurante.isPresent()) {
-			return ResponseEntity.ok(restaurante.get());
-		}
-		return ResponseEntity.notFound().build();
+	public Restaurante buscar(@PathVariable Long restauranteId) {
+		return cadastroRestaurante.buscarOuFalhar(restauranteId);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
+	public Restaurante adicionar(@RequestBody Restaurante restaurante) {
 		try {
-			restaurante = cadastroRestaurante.salvar(restaurante);
-
-			return ResponseEntity.status(HttpStatus.CREATED).body(restaurante);
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
+			return cadastroRestaurante.salvar(restaurante);
+		}catch(CozinhaNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
 		}
 	}
 
 	@PutMapping("/{restauranteId}")
-	public ResponseEntity<?> atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
-		try {
-			Restaurante restauranteAtual = restauranteRepository.findById(restauranteId).orElse(null);
+	public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
+			Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
-			if (restaurante != null) {
 				BeanUtils.copyProperties(restaurante, restauranteAtual, 
 						"id", "formasPagamento", "endereco", "dataCadastro", "produtos");
-
-				cadastroRestaurante.salvar(restauranteAtual);
-				return ResponseEntity.ok(restauranteAtual);
-			}
-			return ResponseEntity.notFound().build();
-		} catch (EntidadeNaoEncontradaException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
+				try {
+					return cadastroRestaurante.salvar(restauranteAtual);
+				}catch (CozinhaNaoEncontradaException e) {
+					throw new NegocioException(e.getMessage());
+				}
 	}
 
 	// metodo que atualiza os campos parcialmentes
 	@PatchMapping("/{restauranteId}")
-	public ResponseEntity<?> atualizarParcial(@PathVariable Long restauranteId,
+	public Restaurante atualizarParcial(@PathVariable Long restauranteId,
 			@RequestBody Map<String, Object> campos) {
 		// Map -> o String seria os valores no payload, e o Object seria o proprio
 		// Objeto
-		Restaurante restauranteAtual = restauranteRepository
-		        .findById(restauranteId).orElse(null);
-
-		if (restauranteAtual == null) {
-			return ResponseEntity.notFound().build();
-		}
+		Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
 		merge(campos, restauranteAtual); // campos -> campos novos altera os campos atuais
 

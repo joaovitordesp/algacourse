@@ -65,7 +65,7 @@ public class Restaurante {
 	@JoinTable(name = "restaurante_forma_pagamento", //nome do relacionamento entre Restaurante e FormaPagamento
 	joinColumns =  @JoinColumn( name = "restaurante_id"), //nome do atributo da tabela 
 	inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")) //nome do atributo da tabela 
-	private List<FormasPagamento> formasPagamento = new ArrayList<>();
+	private List<FormaPagamento> formasPagamento = new ArrayList<>();
 
 	@OneToMany(mappedBy = "restaurante")
 	@JsonIgnore

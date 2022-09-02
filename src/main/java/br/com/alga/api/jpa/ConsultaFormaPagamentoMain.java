@@ -7,8 +7,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
 
 import br.com.alga.api.AlgaFoodApplication;
-import br.com.alga.api.domain.model.FormasPagamento;
-import br.com.alga.api.domain.repository.FormasPagamentoRepository;
+import br.com.alga.api.domain.model.FormaPagamento;
+import br.com.alga.api.domain.repository.FormaPagamentoRepository;
 
 public class ConsultaFormaPagamentoMain {
 	
@@ -18,10 +18,10 @@ public class ConsultaFormaPagamentoMain {
 					.web(WebApplicationType.NONE)
 					.run(args);
 			
-			FormasPagamentoRepository cadPagamento = appContext.getBean(FormasPagamentoRepository.class);
-		List<FormasPagamento> pagamentos = cadPagamento.findAll();
+			FormaPagamentoRepository cadPagamento = appContext.getBean(FormaPagamentoRepository.class);
+		List<FormaPagamento> pagamentos = cadPagamento.findAll();
 		
-		for (FormasPagamento pagamento : pagamentos) {
+		for (FormaPagamento pagamento : pagamentos) {
 			System.out.println(pagamento.getDescricao());
 			}
 		}

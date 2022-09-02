@@ -17,7 +17,7 @@ public interface RestauranteRepository
 		JpaSpecificationExecutor<Restaurante>{
 	/*JpaSpecificationExecutor -> usa os criterios como specification*/
 	
-	@Query("select distinct r from restaurante r join fetch r.cozinha left join fetch r.formasPagamento")
+	@Query("select distinct r from restaurante r join fetch r.cozinha")
 	List<Restaurante> findAll();
 	
 	List<Restaurante> queryByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
