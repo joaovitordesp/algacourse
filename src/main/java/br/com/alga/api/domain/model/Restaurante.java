@@ -17,16 +17,27 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.groups.ConvertGroup;
+import javax.validation.groups.Default;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import br.com.alga.api.core.validation.Groups;
+import br.com.alga.api.core.validation.Multiplo;
+import br.com.alga.api.core.validation.TaxaFrete;
+import br.com.alga.api.core.validation.ValorZeroIncluiDescricao;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+@ValorZeroIncluiDescricao(valorField = "taxaFrete", 
+	descricaoField = "nome", descricaoObrigatoria = "Frete grátis")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity(name = "restaurante")
@@ -38,13 +49,21 @@ public class Restaurante {
 	private Long id;
 
 	@Column(nullable = false)
+	@NotBlank  //não pode ser nulo, vazio e em branco
 	private String nome;
 	
+	@NotNull 
+//	@PositiveOrZero(message = "{TaxaFrete.invalida}")
+	@PositiveOrZero
+	//@TaxaFrete
 	@Column(name = "taxa_frete", nullable = false) // nullable se for true, aceita null, se for false, não aceita null
+	//@Multiplo(numero  = 5) //pode tirar essa linha no futuro caso queira
 	private BigDecimal taxaFrete;
 	
-	@JsonIgnoreProperties({"hibernateLazyInitializer"}) //solução para o erro do Lazy loading, caso queira ver, comente essa linha toda e dê um get em restaurantes
-	@ManyToOne(fetch = FetchType.LAZY) //carregamento só caso precise
+	@Valid
+	@NotNull
+	@ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
+	@ManyToOne
 	@JoinColumn(name = "cozinha_id", nullable = false) //serve para banco legado. Pode retirar se quiser
 	private Cozinha cozinha;
 	
@@ -61,10 +80,10 @@ public class Restaurante {
 	private LocalDateTime dataAtualizacao;
 	
 	@JsonIgnore
-	@ManyToMany(fetch = FetchType.EAGER) //fazer o select de qualquer forma
-	@JoinTable(name = "restaurante_forma_pagamento", //nome do relacionamento entre Restaurante e FormaPagamento
-	joinColumns =  @JoinColumn( name = "restaurante_id"), //nome do atributo da tabela 
-	inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")) //nome do atributo da tabela 
+	@ManyToMany(fetch = FetchType.EAGER) 
+	@JoinTable(name = "restaurante_forma_pagamento", 
+	joinColumns =  @JoinColumn( name = "restaurante_id"), 
+	inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")) 
 	private List<FormaPagamento> formasPagamento = new ArrayList<>();
 
 	@OneToMany(mappedBy = "restaurante")
