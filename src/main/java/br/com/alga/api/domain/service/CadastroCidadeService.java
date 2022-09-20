@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.alga.api.domain.exception.CidadeNaoEncontradaException;
 import br.com.alga.api.domain.exception.EntidadeEmUsoException;
@@ -21,6 +22,7 @@ public class CadastroCidadeService {
 	@Autowired
 	private CadastroEstadoService cadastroEstado;
 
+	@Transactional
 	public Cidade salvar(Cidade cidade) {
 		Long estadoId = cidade.getEstado().getId();
 		Estado estado = cadastroEstado.buscarOuFalhar(estadoId);

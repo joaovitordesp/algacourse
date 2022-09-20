@@ -9,26 +9,26 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import br.com.alga.api.core.validation.Groups;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class Cozinha {
 	
+	@NotNull(groups = Groups.CozinhaId.class)
 	@EqualsAndHashCode.Include
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "NOME", length = 30, nullable = false)
-//	@JsonProperty(value = "titulo") // anotacao para representacao na resposta do json
-//	@JsonIgnore // anotacao par remover o att no corpo do json
+	@NotBlank
 	private String nome;
 	
-	@JsonIgnore // ignore essa propriedade, não serilialize-a quando subir as outras
 	@OneToMany(mappedBy = "cozinha")
 	private List<Restaurante> restaurantes = new ArrayList<>();
 

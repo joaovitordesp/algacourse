@@ -1,4 +1,3 @@
-
 insert into estado (nome) select distinct nome from cidade;
 
 alter table cidade add column estado_id bigint not null;

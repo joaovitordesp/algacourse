@@ -2,6 +2,7 @@ package br.com.alga.api.domain.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.alga.api.domain.exception.RestauranteNaoEncontradoException;
 import br.com.alga.api.domain.model.Cozinha;
@@ -14,8 +15,10 @@ public class CadastroRestauranteService {
 	@Autowired
 	private RestauranteRepository restauranteRepository;
 	
+	@Autowired
 	private CadastroCozinhaService cadastroCozinha;
 
+	@Transactional
 	public Restaurante salvar(Restaurante restaurante) {
 		Long cozinhaId = restaurante.getCozinha().getId();
 		Cozinha cozinha = cadastroCozinha.buscarOuFalhar(cozinhaId);
