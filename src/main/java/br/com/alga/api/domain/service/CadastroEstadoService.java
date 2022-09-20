@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.alga.api.domain.exception.EntidadeEmUsoException;
 import br.com.alga.api.domain.exception.EstadoNaoEncontradoException;
@@ -17,6 +18,7 @@ public class CadastroEstadoService {
 	@Autowired
 	private EstadoRepository estadoRepository;
 	
+	@Transactional
 	public Estado salvar(Estado estado) {
 		return estadoRepository.save(estado);
 	}

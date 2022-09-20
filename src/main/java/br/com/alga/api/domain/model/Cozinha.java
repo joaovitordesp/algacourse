@@ -12,8 +12,6 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import br.com.alga.api.core.validation.Groups;
 import lombok.EqualsAndHashCode;
 
@@ -31,7 +29,6 @@ public class Cozinha {
 	@NotBlank
 	private String nome;
 	
-	@JsonIgnore // ignore essa propriedade, não serilialize-a quando subir as outras
 	@OneToMany(mappedBy = "cozinha")
 	private List<Restaurante> restaurantes = new ArrayList<>();
 
