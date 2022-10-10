@@ -1,10 +1,11 @@
 package br.com.alga.api.domain.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -19,8 +20,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
@@ -46,23 +45,22 @@ public class Restaurante {
 	private Long id;
 
 	@Column(nullable = false)
-	@NotBlank  //não pode ser nulo, vazio e em branco
 	private String nome;
 	
-	@NotNull 
 	@PositiveOrZero
 	@Column(name = "taxa_frete", nullable = false) // nullable se for true, aceita null, se for false, não aceita null
 	private BigDecimal taxaFrete;
 
 	@Valid
 	@ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
-	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "cozinha_id", nullable = false) //serve para banco legado. Pode retirar se quiser
 	private Cozinha cozinha;
 	
 	@Embedded //incopora a classe endereco
 	private Endereco endereco;
+	
+	private Boolean ativo = Boolean.TRUE;
 	
 	@CreationTimestamp //anotacao do hibernate
 	@Column(name = "data_cadastro", nullable = false, columnDefinition = "datetime")
@@ -76,8 +74,24 @@ public class Restaurante {
 	@JoinTable(name = "restaurante_forma_pagamento", 
 		joinColumns =  @JoinColumn( name = "restaurante_id"), 
 			inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")) 
-	private List<FormaPagamento> formasPagamento = new ArrayList<>();
+	private Set<FormaPagamento> formasPagamento = new HashSet<>(); //hashSet eh um conjunto e o mesmo nao aceita elemento duplicado
 
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produto = new ArrayList<>();
+	
+	public void ativar() {
+		setAtivo(true);
+	}
+	
+	public void inativar() {
+		setAtivo(false);
+	}
+	
+	public boolean removeFormaPagamento(FormaPagamento formaPagamento) {
+		return getFormasPagamento().remove(formaPagamento);
+	}
+	
+	public boolean addFormaPagamento(FormaPagamento formaPagamento) {
+		return getFormasPagamento().add(formaPagamento);
+	}
 }
