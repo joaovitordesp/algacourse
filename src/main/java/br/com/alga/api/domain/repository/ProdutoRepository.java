@@ -14,7 +14,7 @@ import br.com.alga.api.domain.model.Restaurante;
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
-    @Query("from Produto where restaurante.id = :restaurante and id = :produto")
+    @Query("from produto where restaurante.id = :restaurante and id = :produto")
     Optional<Produto> findById(@Param("restaurante") Long restauranteId, 
             @Param("produto") Long produtoId);
     
