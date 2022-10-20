@@ -8,19 +8,19 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.com.alga.api.domain.model.Grupo;
-import br.com.alga.api.model.dto.GrupoDTO;
+import br.com.alga.api.domain.model.Pedido;
+import br.com.alga.api.model.dto.PedidoDTO;
 
 @Component
-public class GrupoDTOAssembler {
+public class PedidoDTOAssembler {
 	 @Autowired
 	    private ModelMapper modelMapper;
 	    
-	    public GrupoDTO toModel(Grupo grupo) {
-	        return modelMapper.map(grupo, GrupoDTO.class);
+	    public PedidoDTO toModel(Pedido grupo) {
+	        return modelMapper.map(grupo, PedidoDTO.class);
 	    }
 	    
-	    public List<GrupoDTO> toCollectionModel(Collection<Grupo> grupos) {
+	    public List<PedidoDTO> toCollectionModel(Collection<Pedido> grupos) {
 	        return grupos.stream()
 	                .map(grupo -> toModel(grupo))
 	                .collect(Collectors.toList());

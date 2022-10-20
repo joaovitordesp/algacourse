@@ -51,8 +51,8 @@ public class Restaurante {
 	@Column(name = "taxa_frete", nullable = false) // nullable se for true, aceita null, se for false, não aceita null
 	private BigDecimal taxaFrete;
 
-	@Valid
-	@ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
+//	@Valid
+//	@ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
 	@ManyToOne
 	@JoinColumn(name = "cozinha_id", nullable = false) //serve para banco legado. Pode retirar se quiser
 	private Cozinha cozinha;
@@ -79,6 +79,12 @@ public class Restaurante {
 	@OneToMany(mappedBy = "restaurante")
 	private List<Produto> produto = new ArrayList<>();
 	
+	@ManyToMany
+	@JoinTable(name = "restaurante_usuario_responsavel",
+	        joinColumns = @JoinColumn(name = "restaurante_id"),
+	        inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+	private Set<Usuario> responsaveis = new HashSet<>(); 
+	
 	private Boolean aberto = Boolean.FALSE;
 	
 	public void ativar() {
@@ -97,6 +103,14 @@ public class Restaurante {
 		return getFormasPagamento().add(formaPagamento);
 	}
 	
+	public boolean removerResponsavel(Usuario usuario) {
+	    return getResponsaveis().remove(usuario);
+	}
+
+	public boolean adicionarResponsavel(Usuario usuario) {
+	    return getResponsaveis().add(usuario);
+	}
+	
 	public void abrir() {
 	    setAberto(true);
 	}
@@ -104,4 +118,12 @@ public class Restaurante {
 	public void fechar() {
 	    setAberto(false);
 	}  
+	
+	public boolean aceitaFormaPagamento(FormaPagamento formaPagamento) {
+	    return getFormasPagamento().contains(formaPagamento);
+	}
+
+	public boolean naoAceitaFormaPagamento(FormaPagamento formaPagamento) {
+	    return !aceitaFormaPagamento(formaPagamento);
+	}
 }

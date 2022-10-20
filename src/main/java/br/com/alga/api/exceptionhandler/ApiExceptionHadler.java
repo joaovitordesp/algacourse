@@ -136,35 +136,6 @@ public class ApiExceptionHadler extends ResponseEntityExceptionHandler{
 	        HttpHeaders headers, HttpStatus status, WebRequest request) {
 		
 		return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
-
-//	    ProblemType problemType = ProblemType.DADOS_INVALIDOS;
-//	    String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
-//	       
-//	    BindingResult bindingResult = ex.getBindingResult(); //armazena as violacoes de constraint de validacoes
-//	    
-//	    List<Problem.Object> problemObjects = bindingResult.getAllErrors().stream()
-//	    		.map(objectError ->{
-//	    			String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
-//	    			
-//	    			String name = objectError.getObjectName();
-//	    			
-//	    			if(objectError instanceof FieldError) {
-//	    				name = ( (FieldError) objectError).getField();
-//	    			}
-//	    			
-//	    			return	Problem.Object.builder()
-//	    					.name(name)
-//	    					.userMessage(message)
-//	    					.build();
-//	    		})
-//	    		.collect(Collectors.toList());
-//	    
-//	    Problem problem = createProblemBuilder(status, problemType, detail)
-//	        .userMessage(detail)
-//	        .objects(problemObjects)
-//	        .build();
-//	    
-//	    return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 	
 	private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex,
@@ -248,14 +219,6 @@ public class ApiExceptionHadler extends ResponseEntityExceptionHandler{
 		
 		Problem problem = createProblemBuilder(status, problemType, detail).build();
 		
-		
-//		Problem problema = Problem.builder()
-//				.status(status.value())
-//				.type("https://algafood.com.br/entidade-nao-encontrada")
-//				.title("Entidade não encontrada")
-//				.detail(ex.getMessage())
-//				.build();
-		
 		return handleExceptionInternal(ex, problem, new HttpHeaders(),
 				status, request);
 	}
@@ -319,7 +282,4 @@ public class ApiExceptionHadler extends ResponseEntityExceptionHandler{
 				.title(problemType.getTitle())
 				.detail(detail);
 	}
-	
-	
-	
 }

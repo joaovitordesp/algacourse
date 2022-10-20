@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import br.com.alga.api.domain.model.Endereco;
-import br.com.alga.api.domain.model.Restaurante;
+import br.com.alga.api.domain.model.ItemPedido;
 import br.com.alga.api.model.dto.EnderecoDTO;
-import br.com.alga.api.model.dto.RestauranteDTO;
+import br.com.alga.api.model.input.ItemPedidoInput;
 import lombok.var;
 
 @Configuration
@@ -19,6 +19,9 @@ public class ModelMapperConfig { //config para ter o model mapper no contexto do
 		
 //		/modelMapper.createTypeMap(Restaurante.class, RestauranteDTO.class)
 //			.addMapping(Restaurante::getTaxaFrete, RestauranteDTO::setPrecoFrete);
+		
+		modelMapper.createTypeMap(ItemPedidoInput.class, ItemPedido.class)
+	    .addMappings(mapper -> mapper.skip(ItemPedido::setId)); 
 
 		var enderecoToEnderecoDTOTYpeMap = modelMapper.createTypeMap(
 				Endereco.class, EnderecoDTO.class);

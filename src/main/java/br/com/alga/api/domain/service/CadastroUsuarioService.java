@@ -2,14 +2,13 @@ package br.com.alga.api.domain.service;
 
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.alga.api.domain.exception.NegocioException;
 import br.com.alga.api.domain.exception.UsuarioNaoEncontradoException;
+import br.com.alga.api.domain.model.Grupo;
 import br.com.alga.api.domain.model.Usuario;
 import br.com.alga.api.domain.repository.UsuarioRepository;
 
@@ -18,6 +17,9 @@ public class CadastroUsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private CadastroGrupoService cadastroGrupo;
     
     @Transactional
     public Usuario salvar(Usuario usuario) {
@@ -48,5 +50,21 @@ public class CadastroUsuarioService {
     public Usuario buscarOuFalhar(Long usuarioId) {
         return usuarioRepository.findById(usuarioId)
             .orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
-    }            
+    }
+    
+    @Transactional
+    public void desassociarGrupo(Long usuarioId, Long grupoId) {
+        Usuario usuario = buscarOuFalhar(usuarioId);
+        Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
+        
+        usuario.removerGrupo(grupo);
+    }
+
+    @Transactional
+    public void associarGrupo(Long usuarioId, Long grupoId) {
+        Usuario usuario = buscarOuFalhar(usuarioId);
+        Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
+        
+        usuario.adicionarGrupo(grupo);
+    }
 }     
