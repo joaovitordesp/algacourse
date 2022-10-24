@@ -17,7 +17,7 @@ public class FluxoPedidoController {
 	@Autowired
 	private FluxoPedidoService pedidoService;
 	
-	@PutMapping("/confimacao")
+	@PutMapping("/confirmacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void confirmar(@PathVariable String codigoPedido) {
 		pedidoService.confirmar(codigoPedido);
