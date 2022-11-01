@@ -22,7 +22,9 @@ import br.com.alga.api.domain.exception.NegocioException;
 import br.com.alga.api.domain.model.Pedido;
 import br.com.alga.api.domain.model.Usuario;
 import br.com.alga.api.domain.repository.PedidoRepository;
+import br.com.alga.api.domain.repository.filter.PedidoFilter;
 import br.com.alga.api.domain.service.EmissaoPedidoService;
+import br.com.alga.api.infrastructure.repository.spec.PedidosSpecs;
 import br.com.alga.api.model.dto.PedidoDTO;
 import br.com.alga.api.model.dto.PedidoResumoDTO;
 import br.com.alga.api.model.input.PedidoInput;
@@ -47,8 +49,8 @@ public class PedidoController {
     private PedidoInputDisassembler pedidoInputDisassembler;
     
     @GetMapping
-    public List<PedidoResumoDTO> listar() {
-        List<Pedido> todosPedidos = pedidoRepository.findAll();
+    public List<PedidoResumoDTO> pesquisar(PedidoFilter filtro) {
+        List<Pedido> todosPedidos = pedidoRepository.findAll(PedidosSpecs.usandoFiltro(filtro));
         
         return pedidoResumoDTOAssembler.toCollectionModel(todosPedidos);
     }
@@ -77,4 +79,23 @@ public class PedidoController {
             throw new NegocioException(e.getMessage(), e);
         }
     }
+//    @GetMapping
+//    public MappingJacksonValue listar(@RequestParam(required = false) String campos) {
+//        List<Pedido> pedidos = pedidoRepository.findAll();
+//        List<PedidoResumoDTO> pedidosDTO = pedidoResumoDTOAssembler.toCollectionModel(pedidos);
+//        
+//        MappingJacksonValue pedidosWrapper = new MappingJacksonValue(pedidosDTO);
+//        
+//        SimpleFilterProvider filterProvider = new SimpleFilterProvider();
+//        filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());
+//        
+//        if(StringUtils.isNotBlank(campos)) {
+//        	filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(","))); // quebra as vírgulas em array
+//        }
+//        
+//        pedidosWrapper.setFilters(filterProvider);
+//        
+//        
+//        return pedidosWrapper;
+//    }
 }           
