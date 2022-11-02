@@ -1,6 +1,6 @@
 package br.com.alga.api.exceptionhandler;
 
-import java.net.BindException;
+import org.springframework.validation.BindException;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
-import br.com.alga.api.core.validation.ValidacaoException;
+//import br.com.alga.api.core.validation.ValidacaoException;
 import br.com.alga.api.domain.exception.EntidadeEmUsoException;
 import br.com.alga.api.domain.exception.EntidadeNaoEncontradaException;
 import br.com.alga.api.domain.exception.NegocioException;

@@ -6,17 +6,19 @@ import javax.persistence.criteria.Predicate;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import br.com.alga.api.domain.filter.PedidoFilter;
 import br.com.alga.api.domain.model.Pedido;
-import br.com.alga.api.domain.repository.filter.PedidoFilter;
 import lombok.var;
 
 public class PedidosSpecs {
 	public static Specification<Pedido> usandoFiltro(PedidoFilter filtro) {
 		return (root, query,builder) ->{
 			//TODO: problema do n+1 resolvido usando fetch
-			root.fetch("restaurante").fetch("cozinha");
-			root.fetch("cliente");
-			
+			if(Pedido.class.equals(query.getResultType())) {
+				root.fetch("restaurante").fetch("cozinha");
+				root.fetch("cliente");
+			}
+
 			var predicates = new ArrayList<Predicate>();
 			
 			if(filtro.getClienteId() != null) {

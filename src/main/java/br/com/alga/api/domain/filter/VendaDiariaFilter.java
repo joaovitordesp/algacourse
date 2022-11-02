@@ -1,4 +1,4 @@
-package br.com.alga.api.domain.repository.filter;
+package br.com.alga.api.domain.filter;
 
 import java.time.OffsetDateTime;
 
@@ -8,14 +8,15 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
-public class PedidoFilter {
-	private Long clienteId;
+@Getter
+public class VendaDiariaFilter {
+	
 	private Long restauranteId;
 	
 	@DateTimeFormat(iso = ISO.DATE_TIME)
 	private OffsetDateTime dataCriacaoInicio;
+	
 	@DateTimeFormat(iso = ISO.DATE_TIME)
 	private OffsetDateTime dataCriacaoFim;
 }
