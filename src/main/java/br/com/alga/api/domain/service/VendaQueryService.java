@@ -8,5 +8,5 @@ import br.com.alga.api.domain.model.dto.VendaDiaria;
 public interface VendaQueryService {
 	//interface para o filter de venda diaria
 	
-	List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro);
+	List<VendaDiaria> consultarVendasDiarias(VendaDiariaFilter filtro,String timeOffset);
 }
