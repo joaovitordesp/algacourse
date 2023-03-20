@@ -13,6 +13,7 @@ delete from restaurante;
 delete from restaurante_forma_pagamento;
 delete from usuario;
 delete from usuario_grupo;
+delete from foto_produto;
 
 set foreign_key_checks = 1;
 
@@ -106,7 +107,19 @@ insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagame
         endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
         status, data_criacao, subtotal, taxa_frete, valor_total)
 values (2, '6c12f4f4-5080-11ed-bdc3-0242ac120002', 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro',
-'CRIADO', utc_timestamp, 79, 0, 79);
+'ENTREGUE', utc_timestamp, 79, 0, 79);
+
+insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
+                    endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
+	                status, data_criacao, data_confirmacao, data_entrega, subtotal, taxa_frete, valor_total)
+values (4, '5c621c9a-ba61-4454-8631-8aabefe58dc2', 1, 2, 1, 1, '38400-800', 'Rua Fortaleza', '900', 'Apto 504', 'Centro',
+        'ENTREGUE', '2019-11-02 20:34:04', '2019-11-02 20:35:10', '2019-11-02 21:10:32', 174.4, 5, 179.4);
+        
+insert into pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, 
+                    endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro,
+	                status, data_criacao, data_confirmacao, data_entrega, subtotal, taxa_frete, valor_total)
+values (5, '8d774bcf-b238-42f3-aef1-5fb388754d63', 1, 3, 2, 1, '38400-200', 'Rua 10', '930', 'Casa 20', 'Martins',
+        'ENTREGUE', '2019-11-03 02:00:30', '2019-11-03 02:01:21', '2019-11-03 02:20:10', 87.2, 10, 97.2);
 
 insert into item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao)
 values (3, 2, 6, 1, 79, 79, 'Ao ponto');

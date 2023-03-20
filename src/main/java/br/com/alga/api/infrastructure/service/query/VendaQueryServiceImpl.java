@@ -1,4 +1,4 @@
-package br.com.alga.api.infrastructure.service;
+package br.com.alga.api.infrastructure.service.query;
 
 import java.util.ArrayList;
 import java.util.Date;
