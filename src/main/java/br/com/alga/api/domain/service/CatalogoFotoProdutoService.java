@@ -4,8 +4,12 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import br.com.alga.api.domain.exception.FotoProdutoNaoEncontradaException;
 import br.com.alga.api.domain.model.FotoProduto;
@@ -41,12 +45,24 @@ public class CatalogoFotoProdutoService {
 		
 		NovaFoto novaFoto = NovaFoto.builder()
 				.nomeArquivo(foto.getNomeArquivo())
+				.contentType(foto.getContentType())
 				.inputStream(dadosArquivo)
 				.build();
 		
 		fotoStorageService.substituir(nomeArquivoExistente, novaFoto);
 		
 		return foto;
+	}
+	
+	@Transactional
+	public void excluir(@PathVariable Long restauranteId, 
+	        @PathVariable Long produtoId) {
+		FotoProduto foto = buscarOuFalhar(restauranteId, produtoId);
+		
+		produtoRepository.delete(foto);
+		produtoRepository.flush();
+		
+		fotoStorageService.remover(foto.getNomeArquivo());
 	}
 	
 	public FotoProduto buscarOuFalhar(Long restauranteId, Long produtoId) {
