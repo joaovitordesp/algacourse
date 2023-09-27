@@ -4,18 +4,25 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import br.com.alga.api.domain.exception.NegocioException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,6 +36,8 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    private String codigo;
+    
     private BigDecimal subtotal;
     private BigDecimal taxaFrete;
     private BigDecimal valorTotal;
@@ -36,7 +45,8 @@ public class Pedido {
     @Embedded
     private Endereco enderecoEntrega;
     
-    private StatusPedido status;
+    @Enumerated(EnumType.STRING)
+    private StatusPedido status = StatusPedido.CRIADO;
     
     @CreationTimestamp
     private OffsetDateTime dataCriacao;
@@ -45,7 +55,7 @@ public class Pedido {
     private OffsetDateTime dataCancelamento;
     private OffsetDateTime dataEntrega;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private FormaPagamento formaPagamento;
     
@@ -57,7 +67,55 @@ public class Pedido {
     @JoinColumn(name = "usuario_cliente_id", nullable = false)
     private Usuario cliente;
     
-    @OneToMany(mappedBy = "pedido")
+    //Cascade ajuda a salva a lista dos itens de pedidos, sem ele, isso não acontece
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
+    
+    public void calcularValorTotal() {
+        getItens().forEach(ItemPedido::calcularPrecoTotal);
+        
+        this.subtotal = getItens().stream()
+            .map(item -> item.getPrecoTotal())
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        this.valorTotal = this.subtotal.add(this.taxaFrete);
+    }
+    
+    public void confirmar() {
+    	setStatus(StatusPedido.CONFIRMADO);
+    	setDataConfirmacao(OffsetDateTime.now());
+    }
+    
+    public void entregar() {
+    	setStatus(StatusPedido.ENTREGUE);
+    	setDataEntrega(OffsetDateTime.now());
+    }
+    
+    public void cancelar() {
+    	setStatus(StatusPedido.CANCELADO);
+    	setDataCancelamento(OffsetDateTime.now());
+    }
+    
+    private void setStatus(StatusPedido novoStatus) {
+    	if(getStatus().naoPodeAlterarPara(novoStatus)) {
+    			throw new NegocioException(
+    					String.format("Status do pedido %s não pode ser alterado de %s para %s", 
+    							getCodigo(), getStatus().getDescicao(), novoStatus.getDescicao()));
+    	}
+    	
+    	this.status = novoStatus;
+    }
+    
+    @PrePersist //metodo de callback do jpa
+    private void gerarCodigo() {
+    	setCodigo(UUID.randomUUID().toString());
+    }
 
+//    public void definirFrete() {
+//        setTaxaFrete(getRestaurante().getTaxaFrete());
+//    }
+//
+//    public void atribuirPedidoAosItens() {
+//        getItens().forEach(item -> item.setPedido(this));
+//    }
 }
